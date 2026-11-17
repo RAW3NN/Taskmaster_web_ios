@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <title>График Смен — личный планировщик смен и задач</title>
+    <meta name="description" content="График Смен — спокойный планировщик смен, задач и напоминаний. Работает офлайн, устанавливается на главный экран.">
+    <meta name="author" content="График Смен" />
+    <meta name="keywords" content="график смен, планировщик, задачи, расписание, напоминания, офлайн" />
+
+    
+    
+    <meta property="og:type" content="website" />
+
+    <!-- PWA / Mobile app feel -->
+    <meta name="theme-color" content="#5a7d6b" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1c2528" media="(prefers-color-scheme: dark)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="График Смен" />
+
+    <!-- iOS standalone / splash -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="График Смен" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+
+    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet" />
+
+    <style>
+      /* Splash-like background while JS boots — values match light/dark tokens */
+      html { background: #f6f3ec; }
+      html.dark { background: #14191b; }
+      body { background: inherit; }
+      #root { min-height: 100vh; min-height: 100dvh; }
+      /* App-like: disable iOS rubber-band overscroll & tap highlight */
+      html, body { overscroll-behavior-y: contain; -webkit-tap-highlight-color: transparent; }
+    </style>
+    <script>
+      // Apply theme before first paint to avoid light-mode flash.
+      (function () {
+        try {
+          var key = "app.theme";
+          var legacyKey = "rasporyadok.theme";
+          var raw = localStorage.getItem(key);
+          if (raw !== "dark" && raw !== "light" && raw !== "system") {
+            var legacy = localStorage.getItem(legacyKey);
+            raw = (legacy === "dark" || legacy === "light") ? legacy : "dark"; // default = dark
+          }
+          var effective = raw;
+          if (raw === "system") {
+            effective = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+          }
+          var root = document.documentElement;
+          if (effective === "dark") root.classList.add("dark");
+          root.setAttribute("data-theme", effective);
+          root.style.colorScheme = effective;
+        } catch (e) { /* ignore */ }
+      })();
+    </script>
+    <meta property="og:title" content="График Смен — личный планировщик смен и задач">
+  <meta name="twitter:title" content="График Смен — личный планировщик смен и задач">
+  <meta property="og:description" content="График Смен — спокойный планировщик смен, задач и напоминаний. Работает офлайн, устанавливается на главный экран.">
+  <meta name="twitter:description" content="График Смен — спокойный планировщик смен, задач и напоминаний. Работает офлайн, устанавливается на главный экран.">
+  <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8e0e73e1-666c-46b3-b96a-5ed7e491fd00/id-preview-a8fd09aa--8bf7907a-c9bd-499b-8d0e-5357576094f1.lovable.app-1778275111437.png">
+  <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8e0e73e1-666c-46b3-b96a-5ed7e491fd00/id-preview-a8fd09aa--8bf7907a-c9bd-499b-8d0e-5357576094f1.lovable.app-1778275111437.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="module" crossorigin src="./assets/index-ByVo-6GJ.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-FsgMwtDD.css">
+<link rel="manifest" href="./manifest.webmanifest"></head>
+
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
