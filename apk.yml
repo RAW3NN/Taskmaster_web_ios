@@ -7,7 +7,7 @@ permissions:
   contents: write
 env:
   # Публичный репозиторий: APK для знакомых и проверка обновлений
-  PUBLIC_REPO: RAW3NN/Taskmaster_
+  PUBLIC_REPO: RAW3NN/Taskmaster_web_ios
   # Публичный репозиторий для веб-версии (iPhone и компьютер), сайт на GitHub Pages
   WEB_REPO: RAW3NN/Taskmaster_web_ios
 jobs:
