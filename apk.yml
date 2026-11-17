@@ -1,0 +1,71 @@
+name: Build APK
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+env:
+  # Публичный репозиторий: APK для знакомых и проверка обновлений
+  PUBLIC_REPO: RAW3NN/Taskmaster.
+  # Публичный репозиторий для веб-версии (iPhone и компьютер), сайт на GitHub Pages
+  WEB_REPO: RAW3NN/Taskmaster-web
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_NUMBER: ${{ github.run_number }}
+      UPDATE_REPO: RAW3NN/Taskmaster.
+      HAS_PUBLIC_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN != '' }}
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip
+        working-directory: .
+        run: unzip -q grafik-smen-apk.zip -d app
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm install
+      - run: npx vite build
+      - name: Web version (GitHub Pages)
+        if: env.HAS_PUBLIC_TOKEN == 'true'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
+          external_repository: ${{ env.WEB_REPO }}
+          publish_branch: gh-pages
+          publish_dir: app/dist
+          force_orphan: true
+      - run: npx cap add android
+      - run: pip install pillow
+      - run: python3 scripts/android-icons.py
+      - run: npx cap sync android
+      - name: Gradle
+        working-directory: app/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+      - run: cp android/app/build/outputs/apk/debug/app-debug.apk grafik-smen.apk
+      - name: Release (private)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: "График Смен — сборка ${{ github.run_number }}"
+          files: app/grafik-smen.apk
+      - name: Release (public)
+        if: env.HAS_PUBLIC_TOKEN == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          repository: ${{ env.PUBLIC_REPO }}
+          token: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
+          tag_name: v${{ github.run_number }}
+          name: "График Смен — сборка ${{ github.run_number }}"
+          body: "Скачай grafik-smen.apk ниже и установи поверх прежней версии — данные сохранятся."
+          files: app/grafik-smen.apk
